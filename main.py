@@ -1,6 +1,7 @@
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.properties import StringProperty, NumericProperty
+from kivy.utils import platform
 from kivymd.app import MDApp
 import webbrowser
 
@@ -37,7 +38,6 @@ MDNavigationLayout:
                         size_hint_y: None
                         height: self.minimum_height
 
-                        # ===== Hero header =====
                         MDBoxLayout:
                             orientation: "vertical"
                             size_hint_y: None
@@ -64,7 +64,6 @@ MDNavigationLayout:
                                 font_style: "Caption"
                                 theme_text_color: "Secondary"
 
-                        # ===== Input card =====
                         MDCard:
                             orientation: "vertical"
                             size_hint_y: None
@@ -158,7 +157,6 @@ MDNavigationLayout:
                                     size_hint_x: 0.33
                                     on_release: app.set_drop_factor(10)
 
-                        # ===== Calculate button =====
                         MDRaisedButton:
                             text: "CALCULATE DROPS"
                             size_hint_x: 1
@@ -168,7 +166,6 @@ MDNavigationLayout:
                             font_size: dp(16)
                             on_release: app.calculate_drops()
 
-                        # ===== Result card =====
                         MDCard:
                             orientation: "vertical"
                             size_hint_y: None
@@ -213,7 +210,6 @@ MDNavigationLayout:
                             size_hint_y: None
                             height: dp(25)
 
-    # ================= DRAWER =================
     MDNavigationDrawer:
         id: nav_drawer
         radius: [0, 16, 16, 0]
@@ -223,7 +219,6 @@ MDNavigationLayout:
             padding: dp(15)
             spacing: dp(10)
 
-            # --- Drawer header ---
             MDBoxLayout:
                 orientation: "vertical"
                 size_hint_y: None
@@ -250,7 +245,6 @@ MDNavigationLayout:
                     font_style: "Caption"
                     theme_text_color: "Secondary"
 
-            # --- Divider ---
             MDBoxLayout:
                 size_hint_y: None
                 height: dp(1)
@@ -261,7 +255,6 @@ MDNavigationLayout:
                         pos: self.pos
                         size: self.size
 
-            # --- Contact us button ---
             OneLineIconListItem:
                 text: "Contact Us on WhatsApp"
                 on_release: app.contact_whatsapp()
@@ -286,6 +279,16 @@ class MedicalDropsApp(MDApp):
         self.theme_cls.theme_style = "Light"
         return Builder.load_string(KV)
 
+    def on_start(self):
+        # ✅ فرض الوضع العمودي على أندرويد
+        if platform == "android":
+            try:
+                from android import mActivity
+                # 1 = SCREEN_ORIENTATION_PORTRAIT
+                mActivity.setRequestedOrientation(1)
+            except Exception as e:
+                print(f"Orientation lock failed: {e}")
+
     def toggle_theme(self):
         self.theme_cls.theme_style = (
             "Dark" if self.theme_cls.theme_style == "Light" else "Light"
@@ -298,9 +301,7 @@ class MedicalDropsApp(MDApp):
         self.time_unit = unit
 
     def contact_whatsapp(self):
-        # نغلق القائمة أولاً
         self.root.ids.nav_drawer.set_state("close")
-        # نفتح واتساب على الرقم
         webbrowser.open("https://wa.me/967774602007")
 
     def calculate_drops(self):
