@@ -30,8 +30,8 @@ android.ndk = 25b
 # ===== المعمارية =====
 android.archs = arm64-v8a
 
-# ===== الاتجاه =====
-android.orientation = portrait
+# ===== الاتجاه (الحل الأول) =====
+android.orientation = portrait, portrait-reverse
 
 # ===== التخزين =====
 android.private_storage = True
